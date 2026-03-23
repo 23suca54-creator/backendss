@@ -13,7 +13,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/jobs")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*") // allow requests from your frontend (adjust origin for production)
 public class JobApplicationController {
 
     private final JobApplicationService service;
@@ -25,8 +25,10 @@ public class JobApplicationController {
     // Create
     @PostMapping
     public ResponseEntity<JobApplication> createJob(@RequestBody JobApplication job) {
-        JobApplication created = service.createJob(job);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    System.out.println("[DEBUG] Received createJob payload: " + job);
+    JobApplication created = service.createJob(job);
+    System.out.println("[DEBUG] Saved JobApplication: " + created);
+    return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     // Read all
@@ -55,6 +57,13 @@ public class JobApplicationController {
     public ResponseEntity<Void> deleteJob(@PathVariable Long id) {
         service.deleteJob(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // simple handler to log unexpected exceptions (returns 500)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleServerError(Exception ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error: " + ex.getMessage());
     }
 
 }

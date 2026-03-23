@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * JPA entity representing a job application.
@@ -33,6 +34,7 @@ public class JobApplication {
     private Double salary;
 
     @Column(name = "application_date", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate applicationDate;
 
     @Column(name = "status", nullable = false)
